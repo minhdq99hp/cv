@@ -1,0 +1,7 @@
+input/*
+output/*
+**/__pycache__/
+.ipynb_checkpoints/
+
+facemask-dataset.zip
+weights/*
