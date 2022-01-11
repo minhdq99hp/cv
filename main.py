@@ -38,6 +38,7 @@ from detector import Detector
 #         # we stop
 #         break
 
+os.environ["CUDA_VISIBLE_DEVICES"]=""
 
 
 def main(args):
@@ -58,7 +59,9 @@ def main(args):
             print("Must specify output path")
             sys.exit(1)
     
-    detector = Detector(model_name=args.model, confidence=args.min_confidence, iou=args.min_iou)
+    print('Device: ', args.device, torch.cuda.is_available())
+    
+    detector = Detector(model_name=args.model, device=args.device, confidence=args.min_confidence, iou=args.min_iou)
 
     if args.mode == 'image':
         img = Image.open(args.input)
@@ -110,6 +113,38 @@ def main(args):
             #     # we stop
             #     break
         
+    elif args.mode == 'camera':
+        cap = cv2.VideoCapture(0)
+
+        # total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        fps = cap.get(cv2.CAP_PROP_FPS)
+
+        frame_width = int(cap.get(3))
+        frame_height = int(cap.get(4))
+        resized_dim = (640, int(frame_height * 640 / frame_width))
+        
+
+        i = 0
+        while True:
+            i += 1
+            flag, frame = cap.read()
+            if flag:
+                frame = cv2.resize(frame, resized_dim)
+
+                res = detector.detect(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+
+                cv2.imshow('output', cv2.cvtColor(res, cv2.COLOR_RGB2BGR))
+                
+                # print(f"{i}/{total_frames}")
+            else:
+                print('frame is not valid')
+                continue
+
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+    
+        cv2.destroyAllWindows()
+
     else:
         pass
 
@@ -123,6 +158,7 @@ if __name__ == '__main__':
     parser.add_argument('--output', type=str)
     parser.add_argument('--min_confidence', type=float, default=0.5)
     parser.add_argument('--min_iou', type=int, default=0.5)
+    parser.add_argument('--device', type=str, default='cpu')
     # parser.add_argument('integers', metavar='int', nargs='+', type=int, help='an integer to be summed')
     # parser.add_argument('--log', default=sys.stdout, type=argparse.FileType('w'), help='the file where the sum should be written')
     args = parser.parse_args()

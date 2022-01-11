@@ -4,4 +4,9 @@ output/*
 .ipynb_checkpoints/
 
 facemask-dataset.zip
-weights/*
+# weights/*
+
+env/
+
+*.mp4
+*.jpg

@@ -18,20 +18,26 @@ class Detector:
         self.model_name = model_name
         self.confidence = confidence
         self.iou = iou
+        if device in ('gpu', 'cuda'):
+            self.device = 'cuda'
+        else:
+            self.device = 'cpu'
 
         self.colors = [(255, 0, 0), (0, 255, 0), (128, 0, 128)]
 
         if self.model_name == 'yolo5m':
             weight_path = os.path.join('weights', 'yolo5m_best')
-            self.model = torch.hub.load('yolov5', 'custom', path=weight_path, source='local')
+            self.model = torch.hub.load('yolov5', 'custom', path=weight_path, source='local', device=self.device)
         elif self.model_name == 'yolo5s':
             weight_path = os.path.join('weights', 'yolo5s_best')
-            self.model = torch.hub.load('yolov5', 'custom', path=weight_path, source='local')
+            self.model = torch.hub.load('yolov5', 'custom', path=weight_path, source='local', device=self.device)
 
-        if device == 'gpu':
+        if self.device == 'cuda':
             self.model.cuda()
         else:
             self.model.cpu()
+
+        # torch.device("cuda" if torch.cuda.is_available() else "cpu")
         
     def _detect_yolov5(self, img):
         """
@@ -50,7 +56,7 @@ class Detector:
         if pred.size(0) >= 2:
             # filter by iou
 
-            valid_tensor = torch.tensor([[True]] * pred.size(0), device=torch.device("cuda" if torch.cuda.is_available() else "cpu"))
+            valid_tensor = torch.tensor([[True]] * pred.size(0), device=self.device)
 
             # print(valid_tensor.size())
 
