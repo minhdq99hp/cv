@@ -5,6 +5,8 @@ from PIL import Image
 from torchvision.utils import draw_bounding_boxes
 # import torchvision.transforms.functional as F
 import torchvision.ops.boxes as bops
+from collections import deque
+from datetime import datetime
 
 # box1 = torch.tensor([[511, 41, 577, 76]], dtype=torch.float)
 # box2 = torch.tensor([[544, 59, 610, 94]], dtype=torch.float)
@@ -38,6 +40,9 @@ class Detector:
             self.model.cpu()
 
         # torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+        self.queue = deque()
+        self.total = 0.0
         
     def _detect_yolov5(self, img):
         """
@@ -101,7 +106,25 @@ class Detector:
         Return: PIL image/RGB numpy array
         """
 
+        start = datetime.now()
+
         if self.model_name in ('yolo5m', 'yolo5s'):
             res = self._detect_yolov5(img)
         
+        end = datetime.now()
+
+        a = (end-start).total_seconds()
+
+        if len(self.queue) < 10:
+            
+            print(f'Total duration: {a * 1000} ms')
+            self.queue.append(a)
+            self.total += a
+        else:
+            b = self.queue.popleft()
+            self.queue.append(a)
+            self.total = self.total - b + a
+
+            print(f"Mean: {self.total / 10 * 1000} ms")
+
         return res

@@ -5,7 +5,7 @@ import argparse
 import torch
 from PIL import ImageGrab
 from PIL import Image
-
+import time
 import cv2
 
 from detector import Detector
