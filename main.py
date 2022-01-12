@@ -47,7 +47,7 @@ def main(args):
         print("Invalid inferencing mode")
         sys.exit(1)
     
-    if args.model not in ('yolo5m', 'yolo5s'):
+    if args.model not in ('yolo5m', 'yolo5s', 'yolo5l', 'faster_rcnn'):
         print("Unsupported model")
         sys.exit(1)
     
@@ -161,7 +161,7 @@ if __name__ == '__main__':
     parser.add_argument('--output', type=str)
     parser.add_argument('--min_confidence', type=float, default=0.5)
     parser.add_argument('--min_iou', type=int, default=0.5)
-    parser.add_argument('--device', type=str, default='cpu')
+    parser.add_argument('--device', type=str, default='gpu')
     # parser.add_argument('integers', metavar='int', nargs='+', type=int, help='an integer to be summed')
     # parser.add_argument('--log', default=sys.stdout, type=argparse.FileType('w'), help='the file where the sum should be written')
     args = parser.parse_args()
