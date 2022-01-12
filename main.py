@@ -38,7 +38,7 @@ from detector import Detector
 #         # we stop
 #         break
 
-os.environ["CUDA_VISIBLE_DEVICES"]=""
+# os.environ["CUDA_VISIBLE_DEVICES"]=""
 
 
 def main(args):

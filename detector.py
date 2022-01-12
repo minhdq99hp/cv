@@ -29,10 +29,12 @@ class Detector:
 
         if self.model_name == 'yolo5m':
             weight_path = os.path.join('weights', 'yolo5m_best')
-            self.model = torch.hub.load('yolov5', 'custom', path=weight_path, source='local', device=self.device)
+            self.model = torch.hub.load('yolov5', 'custom', path=weight_path, source='local')
+            
+
         elif self.model_name == 'yolo5s':
             weight_path = os.path.join('weights', 'yolo5s_best')
-            self.model = torch.hub.load('yolov5', 'custom', path=weight_path, source='local', device=self.device)
+            self.model = torch.hub.load('yolov5', 'custom', path=weight_path, source='local')
 
         if self.device == 'cuda':
             self.model.cuda()
