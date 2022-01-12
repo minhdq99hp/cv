@@ -5,6 +5,7 @@ import argparse
 import torch
 from PIL import ImageGrab
 from PIL import Image
+import numpy as np
 import time
 import cv2
 
@@ -65,7 +66,9 @@ def main(args):
 
     if args.mode == 'image':
         img = Image.open(args.input)
-        res = detector.detect(img)
+        res = detector.detect(np.asarray(img))
+
+        res = Image.fromarray(res)
         res.save(args.output)
     elif args.mode == 'video':
         cap = cv2.VideoCapture(args.input)
