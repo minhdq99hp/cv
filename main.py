@@ -65,7 +65,14 @@ def main(args):
     detector = Detector(model_name=args.model, device=args.device, confidence=args.min_confidence, iou=args.min_iou)
 
     if args.mode == 'image':
-        img = Image.open(args.input)
+        if args.input.endswith(('.jpg', '.jpeg')):
+            img = Image.open(args.input)
+        else:
+            img = Image.open(args.input)
+            img = Image.composite(img, Image.new('RGB', img.size, 'white'), img)
+
+
+
         res = detector.detect(np.asarray(img))
 
         res = Image.fromarray(res)
